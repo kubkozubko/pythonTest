@@ -30,3 +30,9 @@ if __name__ == "__main__":
         print(f"Description: {weather['description']}")
     else:
         print("Failed to get weather information")
+
+
+
+
+    print("My name is: ", __name__)
+

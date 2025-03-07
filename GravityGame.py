@@ -69,18 +69,18 @@ class GravityGame:
 
     def go_up(self, event):
         self.dx = 0
-        self.dy = -1 * (1 + self.score * 0.1)
+        self.dy = -2 * (1 + self.score * 0.1)  # Increased initial speed
 
     def go_down(self, event):
         self.dx = 0
-        self.dy = 1 * (1 + self.score * 0.1)
+        self.dy = 2 * (1 + self.score * 0.1)  # Increased initial speed
 
     def go_left(self, event):
-        self.dx = -1 * (1 + self.score * 0.1)
+        self.dx = -2 * (1 + self.score * 0.1)  # Increased initial speed
         self.dy = 0
 
     def go_right(self, event):
-        self.dx = 1 * (1 + self.score * 0.1)
+        self.dx = 2 * (1 + self.score * 0.1)  # Increased initial speed
         self.dy = 0
 
     def move_finish_line(self):
@@ -96,11 +96,19 @@ class GravityGame:
         self.obstacles.clear()
 
         for _ in range(self.score):
+            shape_type = random.choice(['rectangle', 'oval', 'triangle'])
             x1 = random.randint(0, self.root.winfo_screenwidth() - 50)
             y1 = random.randint(0, self.root.winfo_screenheight() - 50)
             x2 = x1 + 50
             y2 = y1 + 50
-            obstacle = self.canvas.create_rectangle(x1, y1, x2, y2, fill="black")
+
+            if shape_type == 'rectangle':
+                obstacle = self.canvas.create_rectangle(x1, y1, x2, y2, fill="black")
+            elif shape_type == 'oval':
+                obstacle = self.canvas.create_oval(x1, y1, x2, y2, fill="black")
+            elif shape_type == 'triangle':
+                obstacle = self.canvas.create_polygon(x1, y2, (x1 + x2) // 2, y1, x2, y2, fill="black")
+
             self.obstacles.append(obstacle)
 
     def check_collision(self, item):

@@ -23,6 +23,8 @@ class GravityGame:
             self.start_button.pack_forget()
         if hasattr(self, 'play_again_button'):
             self.play_again_button.pack_forget()
+        if hasattr(self, 'score_label'):
+            self.score_label.pack_forget()
         self.canvas.delete("all")
         self.score = 0
         self.dx = 0

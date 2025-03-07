@@ -89,6 +89,7 @@ class GravityGame:
         x2 = x1 + 50
         y2 = y1 + 50
         self.canvas.coords(self.finish_line, x1, y1, x2, y2)
+        self.finish_line_coords = (x1, y1, x2, y2)
 
     def spawn_obstacles(self):
         for obstacle in self.obstacles:
@@ -97,10 +98,15 @@ class GravityGame:
 
         for _ in range(self.score):
             shape_type = random.choice(['rectangle', 'oval', 'triangle'])
-            x1 = random.randint(0, self.root.winfo_screenwidth() - 50)
-            y1 = random.randint(0, self.root.winfo_screenheight() - 50)
-            x2 = x1 + 50
-            y2 = y1 + 50
+            while True:
+                x1 = random.randint(0, self.root.winfo_screenwidth() - 50)
+                y1 = random.randint(0, self.root.winfo_screenheight() - 50)
+                x2 = x1 + 50
+                y2 = y1 + 50
+
+                # Check if the new obstacle is too close to the finish line
+                if not self.is_too_close_to_finish_line(x1, y1, x2, y2):
+                    break
 
             if shape_type == 'rectangle':
                 obstacle = self.canvas.create_rectangle(x1, y1, x2, y2, fill="black")
@@ -110,6 +116,12 @@ class GravityGame:
                 obstacle = self.canvas.create_polygon(x1, y2, (x1 + x2) // 2, y1, x2, y2, fill="black")
 
             self.obstacles.append(obstacle)
+
+    def is_too_close_to_finish_line(self, x1, y1, x2, y2):
+        fx1, fy1, fx2, fy2 = self.finish_line_coords
+        buffer = 50  # Minimum distance from the finish line
+        return (x1 < fx2 + buffer and x2 > fx1 - buffer and
+                y1 < fy2 + buffer and y2 > fy1 - buffer)
 
     def check_collision(self, item):
         ball_pos = self.canvas.coords(self.ball)

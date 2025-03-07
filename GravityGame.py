@@ -5,20 +5,34 @@ class GravityGame:
     def __init__(self, root):
         self.root = root
         self.root.title("Gravity Game")
+        self.root.attributes('-fullscreen', True)
         
-        self.canvas = tk.Canvas(self.root, bg="white", width=800, height=600)
-        self.canvas.pack()
+        self.canvas = tk.Canvas(self.root, bg="white")
+        self.canvas.pack(fill=tk.BOTH, expand=True)
+
+        self.start_screen()
+
+    def start_screen(self):
+        self.canvas.delete("all")
+        self.start_button = tk.Button(self.root, text="Start Game", command=self.start_game, font=("Arial", 20))
+        self.start_button.pack(pady=20)
+        self.canvas.create_text(self.root.winfo_screenwidth() // 2, self.root.winfo_screenheight() // 2, text="Gravity Game", font=("Arial", 50), fill="black")
+
+    def start_game(self):
+        if hasattr(self, 'start_button'):
+            self.start_button.pack_forget()
+        if hasattr(self, 'play_again_button'):
+            self.play_again_button.pack_forget()
+        self.canvas.delete("all")
+        self.score = 0
+        self.dx = 0
+        self.dy = 0
+        self.obstacles = []
 
         self.ball = self.canvas.create_oval(390, 290, 410, 310, fill="blue")
         self.finish_line = self.canvas.create_rectangle(0, 0, 50, 50, fill="red")
-        self.score = 0
-        self.score_label = tk.Label(self.root, text=f"Score: {self.score}")
+        self.score_label = tk.Label(self.root, text=f"Score: {self.score}", font=("Arial", 20))
         self.score_label.pack()
-
-        self.dx = 0
-        self.dy = 0
-
-        self.obstacles = []
 
         self.root.bind("<Up>", self.go_up)
         self.root.bind("<Down>", self.go_down)
@@ -31,9 +45,9 @@ class GravityGame:
     def update(self):
         self.canvas.move(self.ball, self.dx, self.dy)
         pos = self.canvas.coords(self.ball)
-        if pos[1] <= 0 or pos[3] >= 600:
+        if pos[1] <= 0 or pos[3] >= self.root.winfo_screenheight():
             self.dy = 0
-        if pos[0] <= 0 or pos[2] >= 800:
+        if pos[0] <= 0 or pos[2] >= self.root.winfo_screenwidth():
             self.dx = 0
 
         if self.check_collision(self.finish_line):
@@ -68,8 +82,8 @@ class GravityGame:
         self.dy = 0
 
     def move_finish_line(self):
-        x1 = random.randint(0, 750)
-        y1 = random.randint(0, 550)
+        x1 = random.randint(0, self.root.winfo_screenwidth() - 50)
+        y1 = random.randint(0, self.root.winfo_screenheight() - 50)
         x2 = x1 + 50
         y2 = y1 + 50
         self.canvas.coords(self.finish_line, x1, y1, x2, y2)
@@ -80,8 +94,8 @@ class GravityGame:
         self.obstacles.clear()
 
         for _ in range(self.score):
-            x1 = random.randint(0, 750)
-            y1 = random.randint(0, 550)
+            x1 = random.randint(0, self.root.winfo_screenwidth() - 50)
+            y1 = random.randint(0, self.root.winfo_screenheight() - 50)
             x2 = x1 + 50
             y2 = y1 + 50
             obstacle = self.canvas.create_rectangle(x1, y1, x2, y2, fill="black")
@@ -96,7 +110,9 @@ class GravityGame:
     def end_game(self):
         self.dx = 0
         self.dy = 0
-        self.canvas.create_text(400, 300, text="Game Over", font=("Arial", 30), fill="red")
+        self.canvas.create_text(self.root.winfo_screenwidth() // 2, self.root.winfo_screenheight() // 2, text="Game Over", font=("Arial", 50), fill="red")
+        self.play_again_button = tk.Button(self.root, text="Play Again", command=self.start_game, font=("Arial", 20))
+        self.play_again_button.pack(pady=20)
 
 if __name__ == "__main__":
     root = tk.Tk()

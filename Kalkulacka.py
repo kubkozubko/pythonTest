@@ -1,3 +1,6 @@
+import tkinter as tk
+from tkinter import messagebox
+
 def add(x, y):
     return x + y
 
@@ -12,35 +15,54 @@ def divide(x, y):
         return "Error! Division by zero."
     return x / y
 
-def calculator():
-    while True:
-        print("Select operation:")
-        print("1. Add")
-        print("2. Subtract")
-        print("3. Multiply")
-        print("4. Divide")
-        print("x. Exit")
+def calculate():
+    num1 = float(entry1.get())
+    num2 = float(entry2.get())
+    operation = operation_var.get()
 
-        choice = input("Enter choice(1/2/3/4/x): ")
+    if operation == '1':
+        result = add(num1, num2)
+    elif operation == '2':
+        result = subtract(num1, num2)
+    elif operation == '3':
+        result = multiply(num1, num2)
+    elif operation == '4':
+        result = divide(num1, num2)
+    else:
+        messagebox.showerror("Invalid input", "Please select a valid operation")
+        return
 
-        if choice == 'x':
-            print("Exiting the program.")
-            break
-        elif choice in ['1', '2', '3', '4']:
-            num1 = float(input("Enter first number: "))
-            num2 = float(input("Enter second number: "))
+    result_label.config(text=f"Result: {result}")
 
-            if choice == '1':
-                print(f"{num1} + {num2} = {add(num1, num2)}")
-            elif choice == '2':
-                print(f"{num1} - {num2} = {subtract(num1, num2)}")
-            elif choice == '3':
-                print(f"{num1} * {num2} = {multiply(num1, num2)}")
-            elif choice == '4':
-                print(f"{num1} / {num2} = {divide(num1, num2)}")
-        else:
-            print("Invalid input, please try again.")
+def exit_program():
+    root.destroy()
 
-if __name__ == "__main__":
-    calculator()
+root = tk.Tk()
+root.title("Simple Calculator")
+
+
+tk.Label(root, text="Enter first number:").grid(row=0, column=0)
+entry1 = tk.Entry(root)
+entry1.grid(row=0, column=1)
+
+tk.Label(root, text="Enter second number:").grid(row=1, column=0)
+entry2 = tk.Entry(root)
+entry2.grid(row=1, column=1)
+
+operation_var = tk.StringVar()
+operation_var.set('1')
+
+tk.Label(root, text="Select operation:").grid(row=2, column=0)
+tk.Radiobutton(root, text="Add", variable=operation_var, value='1').grid(row=2, column=1)
+tk.Radiobutton(root, text="Subtract", variable=operation_var, value='2').grid(row=3, column=1)
+tk.Radiobutton(root, text="Multiply", variable=operation_var, value='3').grid(row=4, column=1)
+tk.Radiobutton(root, text="Divide", variable=operation_var, value='4').grid(row=5, column=1)
+
+tk.Button(root, text="Calculate", command=calculate).grid(row=6, column=0)
+tk.Button(root, text="Exit", command=exit_program).grid(row=6, column=1)
+
+result_label = tk.Label(root, text="Result: ")
+result_label.grid(row=7, column=0, columnspan=2)
+
+root.mainloop()
 

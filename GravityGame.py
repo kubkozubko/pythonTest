@@ -39,13 +39,15 @@ class GravityGame:
         if self.check_collision(self.finish_line):
             self.score += 1
             self.score_label.config(text=f"Score: {self.score}")
+            self.dx = 0
+            self.dy = 0
             self.move_finish_line()
             self.spawn_obstacles()
 
         for obstacle in self.obstacles:
             if self.check_collision(obstacle):
-                self.dx = 0
-                self.dy = 0
+                self.end_game()
+                return
 
         self.root.after(10, self.update)
 
@@ -90,6 +92,11 @@ class GravityGame:
         item_pos = self.canvas.coords(item)
         return (ball_pos[2] >= item_pos[0] and ball_pos[0] <= item_pos[2] and
                 ball_pos[3] >= item_pos[1] and ball_pos[1] <= item_pos[3])
+
+    def end_game(self):
+        self.dx = 0
+        self.dy = 0
+        self.canvas.create_text(400, 300, text="Game Over", font=("Arial", 30), fill="red")
 
 if __name__ == "__main__":
     root = tk.Tk()
